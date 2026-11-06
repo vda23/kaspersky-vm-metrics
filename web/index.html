@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" data-theme="{{THEME}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="app-version" content="{{VERSION}}">
+<title>{{TITLE}}</title>
+<link rel="icon" href="{{FAVICON}}" id="favicon">
+<meta name="static-favicon" content="{{STATIC_FAVICON}}">
+<link rel="preload" href="/font" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="/static/app.css?v={{CSS_V}}">
+<script src="/static/app.js?v={{JS_V}}" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main" data-i18n="skip">Перейти к содержимому</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      {{BRAND_MARK}}
+      <div class="brand-text">
+        <div class="brand-title">Kaspersky Vulnerability Management</div>
+        <div class="brand-sub" data-i18n="subtitle">Мониторинг компонентов решения</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="refresh-ctl" role="group" data-i18n-aria="refresh_group">
+        <label class="sr-only" for="interval" data-i18n="interval">Интервал обновления</label>
+        <select id="interval" class="select select-sm">
+          <option value="5">5 s</option>
+          <option value="10">10 s</option>
+          <option value="30">30 s</option>
+          <option value="60">60 s</option>
+          <option value="0" data-i18n="off">Выкл.</option>
+        </select>
+        <button type="button" class="btn btn-icon" id="btn-refresh" data-i18n-title="refresh_now" data-i18n-aria="refresh_now">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="seg" role="group" aria-label="Language">
+        <button type="button" class="seg-btn" data-lang="ru">RU</button>
+        <button type="button" class="seg-btn" data-lang="en">EN</button>
+      </div>
+      <button type="button" class="btn btn-icon" id="btn-theme" data-i18n-title="theme" data-i18n-aria="theme">
+        <svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="banner" id="banner" role="alert" hidden>
+  <span id="banner-text"></span>
+  <button type="button" class="btn btn-sm" id="banner-retry" data-i18n="retry">Повторить</button>
+</div>
+
+<main id="main" class="container" tabindex="-1">
+  <section class="hero" aria-labelledby="overall-title">
+    <div class="overall" id="overall" data-state="loading">
+      <span class="overall-icon" aria-hidden="true"></span>
+      <div class="overall-text">
+        <h1 id="overall-title" class="overall-title" data-i18n="loading">Загрузка…</h1>
+        <div class="overall-meta"><span id="host">{{HOST}}</span><span id="os-name">—</span></div>
+        <div class="overall-time" id="server-time">—</div>
+      </div>
+    </div>
+    <div class="kpis" id="kpis">
+      <div class="kpi"><div class="kpi-label" data-i18n="kpi_services">Службы</div><div class="kpi-value" id="kpi-services">—</div><div class="kpi-sub" id="kpi-services-sub"></div></div>
+      <div class="kpi"><div class="kpi-label" data-i18n="kpi_svc_mem">Память служб</div><div class="kpi-value" id="kpi-svc-mem">—</div><div class="kpi-sub" id="kpi-svc-mem-sub"></div></div>
+      <div class="kpi"><div class="kpi-label" data-i18n="kpi_ram">ОЗУ</div><div class="kpi-value" id="kpi-ram">—</div><div class="kpi-sub" id="kpi-ram-sub"></div></div>
+      <div class="kpi"><div class="kpi-label kpi-label-raw">vCPU</div><div class="kpi-value" id="kpi-cpu">—</div><div class="kpi-sub" id="kpi-cpu-sub"></div></div>
+      <div class="kpi"><div class="kpi-label" data-i18n="kpi_uptime">Время работы сервера</div><div class="kpi-value" id="kpi-uptime">—</div><div class="kpi-sub" id="kpi-uptime-sub"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="mem-title">
+    <div class="panel-head">
+      <h2 id="mem-title" class="panel-title" data-i18n="memory">Оперативная память</h2>
+      <span class="panel-note" id="mem-note"></span>
+    </div>
+    <div class="membar" id="membar" role="img">
+      <span class="seg-anon" id="mem-anon"></span><span class="seg-cache" id="mem-cache"></span><span class="seg-free" id="mem-free"></span>
+    </div>
+    <ul class="legend">
+      <li><span class="swatch swatch-anon"></span><span data-i18n="mem_processes">Процессы</span> <strong id="leg-anon">—</strong></li>
+      <li><span class="swatch swatch-cache"></span><span data-i18n="mem_cached">Кэш</span> <strong id="leg-cache">—</strong></li>
+      <li><span class="swatch swatch-free"></span><span data-i18n="mem_free">Свободно</span> <strong id="leg-free">—</strong></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="svc-title">
+    <div class="section-head">
+      <h2 id="svc-title" class="section-title" data-i18n="services">Службы</h2>
+      <div class="section-tools">
+        <button type="button" class="btn btn-sm" id="btn-logs-today"><span data-i18n="logs_today">Скачать логи за сегодня</span></button>
+        <button type="button" class="btn btn-sm" id="btn-logs-day"><span data-i18n="logs_day">Логи за другой день</span></button>
+        <div class="seg seg-sm" role="group" data-i18n-aria="filter">
+          <button type="button" class="seg-btn" data-filter="all"><span data-i18n="filter_all">Все</span> <span class="count" id="cnt-all">0</span></button>
+          <button type="button" class="seg-btn" data-filter="problems"><span data-i18n="filter_problems">Требуют внимания</span> <span class="count" id="cnt-problems">0</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="grid" id="services-grid" aria-live="polite" aria-busy="true">
+      <div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div>
+      <div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div>
+    </div>
+    <p class="empty" id="services-empty" hidden data-i18n="no_problems">Все службы работают штатно.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="reports-title">
+    <div class="panel-head">
+      <div class="panel-heading">
+        <h2 id="reports-title" class="panel-title" data-i18n="reports">Отчёты о состоянии</h2>
+        <span class="panel-note" data-i18n="reports_note">JSON · ежедневно в 19:00 · хранятся 7 дней</span>
+      </div>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-sm btn-primary" id="btn-report-now"><span data-i18n="report_now">Сформировать отчёт сейчас</span></button>
+        <button type="button" class="btn btn-sm" id="btn-reports-all" data-i18n="select_all">Выбрать все</button>
+        <button type="button" class="btn btn-sm" id="btn-reports-dl" disabled data-i18n="download">Скачать</button>
+      </div>
+    </div>
+    <div id="reports-list" class="rows"></div>
+  </section>
+
+  <section class="panel" id="siem-panel" aria-labelledby="siem-title">
+    <div class="panel-head">
+      <div class="panel-heading">
+        <h2 id="siem-title" class="panel-title" data-i18n="siem">Отправка событий в SIEM</h2>
+        <span class="pill pill-sm" id="siem-pill" hidden></span>
+        <span class="panel-note">syslog · CEF</span>
+      </div>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-sm" id="btn-siem"><span data-i18n="siem_configure">Настроить</span></button>
+      </div>
+    </div>
+    <div id="siem-body"></div>
+  </section>
+
+  <section class="panel collapsed" id="ports-panel" aria-labelledby="ports-title">
+    <div class="panel-head">
+      <button type="button" class="disclosure" id="ports-toggle" aria-expanded="false" aria-controls="ports-body">
+        <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2 id="ports-title" class="panel-title" data-i18n="ports">Статус соединений</h2>
+        <span class="count" id="ports-count">0</span>
+      </button>
+    </div>
+    <div id="ports-body" hidden>
+      <div class="table-tools">
+        <label class="sr-only" for="ports-filter" data-i18n="search">Поиск</label>
+        <input type="search" id="ports-filter" class="input" autocomplete="off" data-i18n-placeholder="ports_filter">
+        <label class="check"><input type="checkbox" id="ports-kvm"> <span data-i18n="ports_kvm_only">Только службы Kaspersky VM</span></label>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th aria-sort="none"><button type="button" class="th-sort" data-sort="netid"><span data-i18n="col_proto">Протокол</span><span class="sort-ind" aria-hidden="true"></span></button></th>
+            <th aria-sort="none"><button type="button" class="th-sort" data-sort="state"><span data-i18n="col_state">Состояние</span><span class="sort-ind" aria-hidden="true"></span></button></th>
+            <th aria-sort="none"><button type="button" class="th-sort" data-sort="local"><span data-i18n="col_local">Локальный адрес</span><span class="sort-ind" aria-hidden="true"></span></button></th>
+            <th aria-sort="none"><button type="button" class="th-sort" data-sort="process"><span data-i18n="col_process">Процесс</span><span class="sort-ind" aria-hidden="true"></span></button></th>
+            <th aria-sort="none"><button type="button" class="th-sort" data-sort="service"><span data-i18n="col_service">Служба</span><span class="sort-ind" aria-hidden="true"></span></button></th>
+          </tr></thead>
+          <tbody id="ports-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">Designed by Kaspersky Presales Russia Team · v{{VERSION}}</footer>
+
+<div id="modal-root"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<noscript><div class="banner">JavaScript is required.</div></noscript>
+</body>
+</html>
