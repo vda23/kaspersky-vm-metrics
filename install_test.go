@@ -217,7 +217,7 @@ func TestInstallerIntegrityAndOptions(t *testing.T) {
 	if o, e := installFlags([]string{"--uninstall", "--purge"}); e != nil || !o.purge {
 		t.Fatal(e)
 	}
-	if !older("1.2.0-dev", "1.2.0") || older("1.2.0-dev", "1.0.0") || older("1.2.10", "1.2.9") {
+	if !older("1.1.0", "1.2.0-dev") || !older("1.2.0-dev", "1.2.0") || older("1.2.0-dev", "1.0.0") || older("1.2.10", "1.2.9") {
 		t.Fatal("version comparison")
 	}
 }

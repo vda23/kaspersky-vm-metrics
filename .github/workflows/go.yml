@@ -49,3 +49,28 @@ jobs:
           path: |
             coverage.out
             dist/*.tar.gz
+
+  publish:
+    name: Publish verified release
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release v')
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: publish-release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: linux-*
+          path: ${{ runner.temp }}/release-inputs
+      - name: Attach tested archives and verify their checksums before publication
+        run: bash tools/publish-release.sh "$RUNNER_TEMP/release-inputs"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}

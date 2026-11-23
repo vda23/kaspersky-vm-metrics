@@ -9,7 +9,7 @@ test:
 	CGO_ENABLED=1 $(GO) test -race -coverprofile=coverage.out ./...
 
 test-upgrade: build
-	KVM_UPGRADE_BINARY="$(CURDIR)/build/$(GOARCH)/kaspersky-vm-metrics" $(GO) test -count=1 -run '^TestLiveUpgradeFromV1$$' -v .
+	bash tools/test-upgrade.sh "$(GO)" "$(CURDIR)/build/$(GOARCH)/kaspersky-vm-metrics"
 
 vet:
 	$(GO) vet ./...

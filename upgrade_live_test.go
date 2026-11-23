@@ -21,12 +21,25 @@ import (
 	"time"
 )
 
-// Run through the installer, both released entry points and a real TLS socket.
-// Only unit management and the host's monitoring command output are simulated.
 func TestLiveUpgradeFromV1(t *testing.T) {
+	testLiveUpgrade(t, "1.0.0", "")
+}
+
+func TestLiveUpgradeFromPreview(t *testing.T) {
+	preview := os.Getenv("KVM_PREVIEW_DIR")
+	if preview == "" {
+		t.Skip("run make test-upgrade to build the 1.2.0-dev baseline")
+	}
+	testLiveUpgrade(t, "1.2.0-dev", preview)
+}
+
+// Exercise the installer and real TLS endpoints before migration and after rollback.
+// Only unit management and the host's monitoring command output are simulated.
+func testLiveUpgrade(t *testing.T, previousVersion, preview string) {
+	t.Helper()
 	binary := os.Getenv("KVM_UPGRADE_BINARY")
 	if binary == "" {
-		t.Skip("run make test-upgrade to build the candidate and compare with 1.0.0")
+		t.Skip("run make test-upgrade to build the candidate")
 	}
 	root := t.TempDir()
 	i := newInstaller(filepath.Join(root, "package"))
@@ -40,14 +53,24 @@ func TestLiveUpgradeFromV1(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	const baseline = "f410f5001a7de56ba08503fb80dd6afd3de486a6"
-	for _, name := range []string{legacyName, "install.sh", "KasperskySans-Regular.ttf"} {
-		b, err := exec.Command("git", "show", baseline+":"+name).Output()
-		if err != nil {
-			t.Fatalf("read %s from the 1.0.0 commit: %v", name, err)
+	unitCommand := filepath.Join(i.dir, programName)
+	if preview == "" {
+		const baseline = "f410f5001a7de56ba08503fb80dd6afd3de486a6"
+		for _, name := range []string{legacyName, "install.sh", "KasperskySans-Regular.ttf"} {
+			b, err := exec.Command("git", "show", baseline+":"+name).Output()
+			if err != nil {
+				t.Fatalf("read %s from 1.0.0: %v", name, err)
+			}
+			if err := os.WriteFile(filepath.Join(i.dir, name), b, 0755); err != nil {
+				t.Fatal(err)
+			}
 		}
-		if err := os.WriteFile(filepath.Join(i.dir, name), b, 0755); err != nil {
-			t.Fatal(err)
+		unitCommand = "/usr/bin/python3 " + filepath.Join(i.dir, legacyName)
+	} else {
+		for _, name := range []string{programName, "install.sh", "KasperskySans-Regular.ttf"} {
+			if err := copyFile(filepath.Join(preview, name), filepath.Join(i.dir, name), 0755); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 	var sums strings.Builder
@@ -108,7 +131,7 @@ esac`,
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
 	listener.Close()
-	put(t, i.unit(), fmt.Sprintf("ExecStart=/usr/bin/python3 %s --port %d\n", filepath.Join(i.dir, legacyName), port))
+	put(t, i.unit(), fmt.Sprintf("ExecStart=%s --port %d\n", unitCommand, port))
 	certPath := filepath.Join(i.dir, "cert.pem")
 	if err := generatePair(certPath, filepath.Join(i.dir, "key.pem"), "localhost", time.Now()); err != nil {
 		t.Fatal(err)
@@ -200,7 +223,7 @@ esac`,
 	if err := start(); err != nil {
 		t.Fatal(err)
 	}
-	if err := i.wait(ctx, port, "1.0.0"); err != nil {
+	if err := i.wait(ctx, port, previousVersion); err != nil {
 		t.Fatal(err)
 	}
 	originalStatus := snapshot()
@@ -208,8 +231,17 @@ esac`,
 	for _, path := range []string{"/static/app.js", "/static/app.css", "/brand/logo", "/brand/favicon", "/font"} {
 		originalUI[path] = get(path)
 	}
-	for _, step := range []struct{ action, want string }{{"", version}, {"rollback", "1.0.0"}} {
-		if err := i.execute(ctx, installOptions{action: step.action}); err != nil {
+	force := older(version, previousVersion)
+	if force {
+		if err := i.execute(ctx, installOptions{}); err == nil || !strings.Contains(err.Error(), "--force") {
+			t.Fatalf("downgrade without confirmation returned %v", err)
+		}
+		if err := i.wait(ctx, port, previousVersion); err != nil || len(i.copies()) != 0 {
+			t.Fatalf("declined downgrade changed the installation: %v", err)
+		}
+	}
+	for _, step := range []struct{ action, want string }{{"", version}, {"rollback", previousVersion}} {
+		if err := i.execute(ctx, installOptions{action: step.action, force: step.action == "" && force}); err != nil {
 			t.Fatal(err)
 		}
 		if err := i.wait(ctx, port, step.want); err != nil {
