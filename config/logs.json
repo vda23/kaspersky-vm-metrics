@@ -1,0 +1,37 @@
+[
+  {
+    "key": "worker",
+    "path": "/var/log/kaspersky/vulnerability-management/worker/worker.log",
+    "title_ru": "Служба фоновых задач",
+    "title_en": "Worker",
+    "service": "worker"
+  },
+  {
+    "key": "scanner",
+    "path": "/var/log/kaspersky/vulnerability-management/scanner/scanner.log",
+    "title_ru": "Модуль сканирования уязвимостей",
+    "title_en": "Vulnerability scanning module",
+    "service": "scanner"
+  },
+  {
+    "key": "vms",
+    "path": "/var/log/kaspersky/vulnerability-management/vms/vms*.log",
+    "title_ru": "Модуль обнаружения уязвимостей",
+    "title_en": "Vulnerability detection module",
+    "service": "vms"
+  },
+  {
+    "key": "privateapi",
+    "path": "/var/log/kaspersky/vulnerability-management/privateapi/privateapi.log",
+    "title_ru": "Private API",
+    "title_en": "Private API",
+    "service": "privateapi"
+  },
+  {
+    "key": "publicapi",
+    "path": "/var/log/kaspersky/vulnerability-management/publicapi/publicapi.log",
+    "title_ru": "Public API",
+    "title_en": "Public API",
+    "service": "publicapi"
+  }
+]

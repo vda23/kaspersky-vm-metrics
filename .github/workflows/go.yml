@@ -1,0 +1,49 @@
+name: Go port
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            arch: amd64
+            target: x86_64-linux-gnu.2.17
+          - runner: ubuntu-24.04-arm
+            arch: arm64
+            target: aarch64-linux-gnu.2.17
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+      - run: make vet test
+        env:
+          KVM_REQUIRE_UNIXGRAM: "1"
+      - name: Render live dashboard in Chromium
+        if: matrix.arch == 'amd64'
+        run: |
+          browser=$(command -v google-chrome)
+          KVM_BROWSER="$browser" go test -count=1 -run '^TestDashboardBrowser$' -v .
+      - run: make test-upgrade
+      - run: test -z "$(gofmt -l *.go)"
+      - run: node --check web/app.js
+      - name: Package for a glibc 2.17 target
+        run: |
+          python3 -m venv "$RUNNER_TEMP/zig"
+          "$RUNNER_TEMP/zig/bin/pip" install ziglang==0.13.0
+          export CC="$RUNNER_TEMP/zig/bin/python -m ziglang cc -target ${{ matrix.target }}"
+          make package
+          bash tools/smoke-package.sh dist/*.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: |
+            coverage.out
+            dist/*.tar.gz
