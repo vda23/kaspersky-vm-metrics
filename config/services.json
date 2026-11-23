@@ -1,0 +1,45 @@
+[
+  {
+    "key": "scanner",
+    "unit": "kaspersky-vm-scanner.service",
+    "desc_ru": "Служба модуля сканирования уязвимостей",
+    "desc_en": "Vulnerability scanning module service"
+  },
+  {
+    "key": "vms",
+    "unit": "kaspersky-vm-vms.service",
+    "desc_ru": "Служба модуля обнаружения уязвимостей",
+    "desc_en": "Vulnerability detection module service"
+  },
+  {
+    "key": "worker",
+    "unit": "kaspersky-vm-worker.service",
+    "desc_ru": "Служба фоновых задач, созданных для Kaspersky Vulnerability Management в Kaspersky Security Center",
+    "desc_en": "Background tasks service created for Kaspersky Vulnerability Management in Kaspersky Security Center"
+  },
+  {
+    "key": "privateapi",
+    "unit": "kaspersky-vm-privateapi.service",
+    "desc_ru": "Веб-служба для взаимодействия с веб-плагином управления решением через Kaspersky Security Center Web Console, Сетевым сканером и Службой фоновых задач",
+    "desc_en": "Web service for interacting with the solution's management web plug-in for the Kaspersky Security Center Web Console, Network Scanner, and Worker"
+  },
+  {
+    "key": "publicapi",
+    "unit": "kaspersky-vm-publicapi.service",
+    "desc_ru": "Веб-служба для взаимодействия внешних систем с Kaspersky Vulnerability Management",
+    "desc_en": "Web service for interaction of external systems with Kaspersky Vulnerability Management"
+  },
+  {
+    "key": "postgresql",
+    "unit": "postgresql.service",
+    "detect": [
+      "postgresql*.service",
+      "postgrespro*.service"
+    ],
+    "desc_ru": "Системная служба для управления сервером базы данных",
+    "desc_en": "System service for database server management",
+    "warn_ru": "Все службы Kaspersky Vulnerability Management временно потеряют соединение с базой данных.",
+    "warn_en": "All Kaspersky Vulnerability Management services will temporarily lose their database connection.",
+    "db_port": 5432
+  }
+]

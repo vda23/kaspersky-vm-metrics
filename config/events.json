@@ -1,0 +1,149 @@
+[
+  {
+    "name": "monitor_started",
+    "signature": 100,
+    "severity": 1,
+    "category": "monitor",
+    "title": "Monitoring service started"
+  },
+  {
+    "name": "monitor_stopped",
+    "signature": 101,
+    "severity": 2,
+    "category": "monitor",
+    "title": "Monitoring service stopped"
+  },
+  {
+    "name": "service_up",
+    "signature": 200,
+    "severity": 1,
+    "category": "service",
+    "title": "Service is running"
+  },
+  {
+    "name": "service_down",
+    "signature": 201,
+    "severity": 4,
+    "category": "service",
+    "title": "Service stopped"
+  },
+  {
+    "name": "service_failed",
+    "signature": 202,
+    "severity": 5,
+    "category": "service",
+    "title": "Service failed"
+  },
+  {
+    "name": "service_auto_restart",
+    "signature": 203,
+    "severity": 3,
+    "category": "service",
+    "title": "Service restarted by systemd"
+  },
+  {
+    "name": "restart_requested",
+    "signature": 210,
+    "severity": 2,
+    "category": "service",
+    "title": "Service restart requested"
+  },
+  {
+    "name": "restart_ok",
+    "signature": 211,
+    "severity": 1,
+    "category": "service",
+    "title": "Service restart completed"
+  },
+  {
+    "name": "restart_failed",
+    "signature": 212,
+    "severity": 4,
+    "category": "service",
+    "title": "Service restart failed"
+  },
+  {
+    "name": "restart_timeout",
+    "signature": 213,
+    "severity": 4,
+    "category": "service",
+    "title": "Service restart timed out"
+  },
+  {
+    "name": "auth_failed",
+    "signature": 300,
+    "severity": 3,
+    "category": "auth",
+    "title": "Wrong root password"
+  },
+  {
+    "name": "auth_locked",
+    "signature": 301,
+    "severity": 4,
+    "category": "auth",
+    "title": "Client blocked after failed root password attempts"
+  },
+  {
+    "name": "csrf_rejected",
+    "signature": 302,
+    "severity": 4,
+    "category": "auth",
+    "title": "Request from foreign origin rejected"
+  },
+  {
+    "name": "settings_changed",
+    "signature": 310,
+    "severity": 3,
+    "category": "config",
+    "title": "SIEM forwarding settings changed"
+  },
+  {
+    "name": "memory_high",
+    "signature": 400,
+    "severity": 3,
+    "category": "system",
+    "title": "High memory usage"
+  },
+  {
+    "name": "memory_ok",
+    "signature": 401,
+    "severity": 1,
+    "category": "system",
+    "title": "Memory usage back to normal"
+  },
+  {
+    "name": "disk_high",
+    "signature": 402,
+    "severity": 4,
+    "category": "system",
+    "title": "Low disk space"
+  },
+  {
+    "name": "disk_ok",
+    "signature": 403,
+    "severity": 1,
+    "category": "system",
+    "title": "Disk space back to normal"
+  },
+  {
+    "name": "log_errors",
+    "signature": 500,
+    "severity": 3,
+    "category": "log",
+    "title": "Errors in component log"
+  },
+  {
+    "name": "report_created",
+    "signature": 600,
+    "severity": 1,
+    "category": "report",
+    "title": "Daily state report created"
+  },
+  {
+    "name": "siem_test",
+    "signature": 900,
+    "severity": 1,
+    "category": "test",
+    "title": "Test event"
+  }
+]

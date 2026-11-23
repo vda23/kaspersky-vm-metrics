@@ -1,0 +1,154 @@
+{
+  "config": [
+    "enabled",
+    "host",
+    "port",
+    "protocol",
+    "state",
+    "stats"
+  ],
+  "database": [
+    "db_connections",
+    "desc_en",
+    "desc_ru",
+    "key",
+    "memory_bytes",
+    "memory_source",
+    "pid",
+    "restart",
+    "restarts",
+    "result",
+    "since_mono",
+    "state",
+    "sub_state",
+    "tasks",
+    "unit",
+    "uptime_sec",
+    "warn_en",
+    "warn_ru"
+  ],
+  "journal": [
+    "key",
+    "unit"
+  ],
+  "log_file": [
+    "exists",
+    "key",
+    "mtime",
+    "path",
+    "readable",
+    "resolved",
+    "service",
+    "size",
+    "title_en",
+    "title_ru"
+  ],
+  "logs": [
+    "files",
+    "journals",
+    "reports"
+  ],
+  "memory": [
+    "available",
+    "cache",
+    "free",
+    "processes",
+    "total",
+    "used"
+  ],
+  "report": [
+    "certificate",
+    "events_24h",
+    "generated",
+    "host",
+    "kind",
+    "logs",
+    "monitor_version",
+    "ports",
+    "report",
+    "schema",
+    "services",
+    "siem",
+    "summary",
+    "system"
+  ],
+  "report_summary": [
+    "events_24h",
+    "log_errors_today",
+    "log_warnings_today",
+    "problems",
+    "services_memory_bytes",
+    "services_not_running",
+    "services_running",
+    "services_total",
+    "status"
+  ],
+  "service": [
+    "desc_en",
+    "desc_ru",
+    "key",
+    "memory_bytes",
+    "memory_source",
+    "pid",
+    "restart",
+    "restarts",
+    "result",
+    "since_mono",
+    "state",
+    "sub_state",
+    "tasks",
+    "unit",
+    "uptime_sec",
+    "warn_en",
+    "warn_ru"
+  ],
+  "siem": [
+    "config",
+    "events",
+    "format",
+    "ok",
+    "recent",
+    "recommended",
+    "total"
+  ],
+  "stats": [
+    "connected",
+    "dropped",
+    "failed",
+    "last_error",
+    "last_error_time",
+    "last_sent_time",
+    "queued",
+    "sent"
+  ],
+  "status": [
+    "auth",
+    "host",
+    "ports",
+    "services",
+    "siem",
+    "summary",
+    "system",
+    "time",
+    "tls",
+    "version"
+  ],
+  "summary": [
+    "all_up",
+    "running",
+    "services_memory_bytes",
+    "total"
+  ],
+  "system": [
+    "cpu_percent",
+    "cpu_threads",
+    "memory",
+    "os_name",
+    "uptime_sec"
+  ],
+  "tls": [
+    "certificate",
+    "error",
+    "mode"
+  ]
+}
