@@ -41,6 +41,8 @@ jobs:
           export CC="$RUNNER_TEMP/zig/bin/python -m ziglang cc -target ${{ matrix.target }}"
           make package
           bash tools/smoke-package.sh dist/*.tar.gz
+      - name: Exercise readiness, watchdog and shutdown with systemd
+        run: bash tools/smoke-systemd.sh build/${{ matrix.arch }}/kaspersky-vm-metrics
       - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.arch }}
